@@ -74,6 +74,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:textColor="@color/black"
                 android:hint="Tiêu đề nhật ký"
                 android:textSize="15dp"
                 android:background="@drawable/border_square"/>
@@ -99,6 +100,7 @@
                 android:layout_marginRight="20dp"
                 android:hint="Giờ"
                 android:textSize="15dp"
+                android:textColor="@color/black"
                 android:background="@drawable/border_square"
                 android:inputType="number"/>
             <TextView
@@ -121,11 +123,12 @@
                 android:layout_marginTop="10dp"
                 android:hint="Phút"
                 android:textSize="15dp"
+                android:textColor="@color/black"
                 android:background="@drawable/border_square"
                 android:inputType="number"/>
 
             <EditText
-                android:id="@+id/tilDate"
+                android:id="@+id/etDate"
                 android:layout_width="180dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="10dp"
@@ -134,6 +137,7 @@
                 android:textSize="15dp"
                 app:layout_constraintTop_toTopOf="@id/etgio"
                 app:layout_constraintEnd_toEndOf="@id/etTieude"
+                android:textColor="@color/black"
                 android:focusable="false"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -148,7 +152,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginLeft="20dp"/>
 
-            <EditText
+            <Spinner
                 android:id="@+id/phanloai"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -158,7 +162,8 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
                 android:prompt="@string/phan_loai"
-                android:background="@drawable/border_square" />
+                android:background="@drawable/border_square"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -176,6 +181,7 @@
                 android:layout_height="120dp"
                 android:id="@+id/etChitiet"
                 app:layout_constraintTop_toBottomOf="@id/tvChitiet"
+                android:textColor="@color/black"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"

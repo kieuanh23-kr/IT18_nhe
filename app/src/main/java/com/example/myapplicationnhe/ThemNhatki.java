@@ -29,7 +29,7 @@ import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class addNhatki extends AppCompatActivity {
+public class ThemNhatki extends AppCompatActivity {
 
 
     //Khai báo các view
@@ -79,7 +79,7 @@ public class addNhatki extends AppCompatActivity {
         });
 
         //Tạo các item cho dropdown phân loại
-        String[] loai = {"Sức khỏe", "Học tập", "Công việc", "Bạn bè", "Giải trí"};
+        String[] loai = {"Ưu tiên 1", "Ưu tiên 2", "Ưu tiên 3", "Ưu tiên 4", "Ưu tiên 5"};
         ArrayAdapter<String> adapter_phanloai = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, loai);
         adapter_phanloai.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_phanloai.setAdapter(adapter_phanloai);
@@ -106,7 +106,7 @@ public class addNhatki extends AppCompatActivity {
 
             // Hiển thị DatePickerDialog
             DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    addNhatki.this,
+                    ThemNhatki.this,
                     (DatePicker view, int selectedYear, int selectedMonth, int selectedDay) -> {
                         // Gán ngày được chọn vào EditText
                         String date = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
@@ -119,6 +119,7 @@ public class addNhatki extends AppCompatActivity {
 
         //Sự kiện click cho button Thêm
         btnThem.setOnClickListener(v -> luuNhatki());
+        btnHuy.setOnClickListener(v -> finish());
     }
 
 
@@ -128,7 +129,7 @@ public class addNhatki extends AppCompatActivity {
             void onImageSelected(int backgroundResId, int imageResId);
         }
 
-        private OnImageSelectedListener listener;
+        final private OnImageSelectedListener listener;
 
         public Bottomsheet_icon(OnImageSelectedListener listener) {
             this.listener = listener;
@@ -214,12 +215,13 @@ public class addNhatki extends AppCompatActivity {
         int nhatkiId = getIntent().getIntExtra("nhatki_id", -1);
         if (nhatkiId != -1) {
             isEditMode = true;
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle("Chỉnh sửa nhật ký");
-            }
+            toolbar.setTitle("Chỉnh sửa nhật ký");
+            btnThem.setText("SỬA NHẬT KÝ");
             loadNhatki(nhatkiId);
         } else {
             isEditMode = false;
+            toolbar.setTitle("Thêm nhật ký mới");
+            btnThem.setText("THÊM NHẬT KÝ");
         }
     }
     private void loadNhatki(int nhatkiId){
@@ -230,6 +232,9 @@ public class addNhatki extends AppCompatActivity {
                     etTieude.setText(currentNhatki.getTitle());
                     etChitiet.setText(currentNhatki.getContent());
                     String time = currentNhatki.getTime();
+                    etDate.setText(currentNhatki.getDate());
+                    imbtn_icon.setTag(currentNhatki.getSrcImage() + "," + currentNhatki.getSrcBack());
+
                     String[] parts = time.split(":");
                     String a = parts[0];
                     String b = parts[1];
@@ -249,10 +254,6 @@ public class addNhatki extends AppCompatActivity {
         String phutStr = etPhut.getText().toString().trim();
         String ngay = etDate.getText().toString().trim();
         String phanloai = spinner_phanloai.getSelectedItem().toString();
-        int gio, phut;
-        gio = Integer.parseInt(gioStr);
-        phut = Integer.parseInt(phutStr);
-        String thoiGian = String.format("%02d:%02d", gio, phut);
 
         //Lấy id của image button
         Object tagObj = imbtn_icon.getTag();
@@ -263,19 +264,32 @@ public class addNhatki extends AppCompatActivity {
         int srcResId = Integer.parseInt(parts[0]);
         int bgResId  = Integer.parseInt(parts[1]);
 
-        //Kiểm tra các điều kiện lưu
+        //Kiểm tra rỗng
         if (tieuDe.isEmpty() || chiTiet.isEmpty() || gioStr.isEmpty() || phutStr.isEmpty() || ngay.isEmpty()){
             Toast.makeText(getApplicationContext(),
                     "⚠️ Vui lòng nhập đầy đủ thông tin!",
                     Toast.LENGTH_LONG).show();
             return;
         }
+
+        //Kiểm tra giá trị giờ, phút
+        int gio, phut;
+        try {
+            gio = Integer.parseInt(gioStr);
+            phut = Integer.parseInt(phutStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "⚠️ Giờ/phút không hợp lệ!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         if((gio<0||gio>24)||(phut>60 || phut<0)){
             Toast.makeText(getApplicationContext(),
                     "⚠️ Vui lòng nhập đúng định dạng giờ/phút!",
                     Toast.LENGTH_LONG).show();
             return;
         }
+
+        String thoiGian = String.format("%02d:%02d", gio, phut);
         executorService.execute(()->{
             try{
                 if(isEditMode &&currentNhatki!=null){
@@ -294,23 +308,18 @@ public class addNhatki extends AppCompatActivity {
                     Nhatki nhatkimoi = new Nhatki(tieuDe,chiTiet,srcResId,bgResId,ngay,thoiGian,phanloai);
                     database.nhatkiDao().insert(nhatkimoi);
                 }
-                runOnUiThread(()->{
-                    setResult(RESULT_OK);
-                    finish();
-                });
 
                 runOnUiThread(() -> {
-                    Toast.makeText(addNhatki.this,
+                    Toast.makeText(ThemNhatki.this,
                             isEditMode ? "Cập nhật nhật ký thành công!" : "Thêm nhật ký thành công!",
                             Toast.LENGTH_SHORT).show();
-
                     setResult(RESULT_OK);
                     finish();
                 });
             } catch (Exception e){
                 e.printStackTrace();
                 runOnUiThread(()->{
-                    Toast.makeText(addNhatki.this,"Lỗi:" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ThemNhatki.this,"Lỗi:" + e.toString(), Toast.LENGTH_SHORT).show();
                 });
             }
         });

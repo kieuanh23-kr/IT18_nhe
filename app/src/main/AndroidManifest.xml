@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".addNhatki"/>
+        <activity android:name=".ThemNhatki"/>
         <activity android:name=".ChitietNhatki"/>
     </application>
 

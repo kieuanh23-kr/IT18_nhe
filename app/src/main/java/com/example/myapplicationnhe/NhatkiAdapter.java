@@ -14,11 +14,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiViewHolder> {
     private List<Nhatki> nhatkiList;
-    private List<Nhatki> selectedNhatki;
+    private Set<Integer> selectedNhatki;
     private Context context;
     private OnItemClickListener  listener;
     private boolean isSelectionMode = false;
@@ -32,37 +36,11 @@ public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiView
     public NhatkiAdapter(Context context){
         this.context = context;
         this.nhatkiList = new ArrayList<>();
-        this.selectedNhatki = new ArrayList<>();
+        this.selectedNhatki = new HashSet<>();
     }
-
 
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
-    }
-
-    public void setNhatkiList(List<Nhatki> list) {
-        this.nhatkiList = list != null ? new ArrayList<>(list) : new ArrayList<>();
-        selectedNhatki.clear();
-        isSelectionMode = false;
-        notifyDataSetChanged();
-        if (listener != null) listener.onSelectionChanged(0);
-    }
-
-    public void setSelectionMode(boolean selectionMode){
-        this.isSelectionMode = selectionMode;
-        if(!selectionMode){
-            selectedNhatki.clear();
-        }
-        notifyDataSetChanged();
-    }
-
-    public List<Nhatki> getSelectedNhatki(){
-        return new ArrayList<>(selectedNhatki);
-    }
-
-    public void clearSelection(){
-        selectedNhatki.clear();
-        setSelectionMode(false);
     }
 
     @NonNull
@@ -84,10 +62,40 @@ public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiView
         return nhatkiList.size();
     }
 
+    public void setNhatkiList(List<Nhatki> list) {
+        this.nhatkiList = list;
+        notifyDataSetChanged();
+    }
+
+    public void setSelectionMode(boolean selectionMode){
+        this.isSelectionMode = selectionMode;
+        if(!selectionMode){
+            selectedNhatki.clear();
+        }
+        notifyDataSetChanged();
+    }
+
+    public List<Nhatki> getSelectedNhatki() {
+        List<Nhatki> selected = new ArrayList<>();
+        for (Nhatki nhatki : nhatkiList) {
+            if (selectedNhatki.contains(nhatki.getId())) {
+                selected.add(nhatki);
+            }
+        }
+        return selected;
+    }
+
+    public void clearSelection(){
+        selectedNhatki.clear();
+        setSelectionMode(false);
+    }
+
+
     class NhatkiViewHolder extends RecyclerView.ViewHolder{
         ImageButton icon,iconChon;
         CheckBox checkBox;
         TextView tvTieude, tvNgay,tvGio, tvPhanloai;
+        View itemContainer;
         public NhatkiViewHolder(@NonNull View itemView){
             super(itemView);
             icon=itemView.findViewById(R.id.icon);
@@ -97,6 +105,7 @@ public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiView
             tvNgay=itemView.findViewById(R.id.ngay);
             tvGio=itemView.findViewById(R.id.gio);
             tvPhanloai=itemView.findViewById(R.id.phanloai);
+            itemContainer=itemView.findViewById(R.id.item_container);
         }
 
         public void bind (Nhatki nhatki){
@@ -104,6 +113,7 @@ public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiView
             tvNgay.setText(nhatki.getDate());
             tvGio.setText(nhatki.getTime());
             tvPhanloai.setText(nhatki.getType());
+
 
             try {
                 int imgRes = nhatki.getSrcImage();
@@ -129,57 +139,93 @@ public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiView
                 iconChon.setBackgroundResource(R.drawable.back_circle_black);
             }
 
-            //Chọn hay không chọn
-            boolean isSelected = selectedNhatki.contains(nhatki);
-            checkBox.setChecked(isSelected);
-            if(isSelectionMode && isSelected){
-                icon.setVisibility(View.INVISIBLE);
-                iconChon.setVisibility(View.VISIBLE);
-            } else {
-                iconChon.setVisibility(View.GONE);
+            //Gắn màu cho nhãn phân loại
+            String type = nhatki.getType();
+            tvPhanloai.setText(type);
+            switch (type) {
+                case "Ưu tiên 1":
+                    tvPhanloai.setBackgroundResource(R.drawable.back_square_blue);
+                    break;
+                case "Ưu tiên 2":
+                    tvPhanloai.setBackgroundResource(R.drawable.back_square_green_2);
+                    break;
+                case "Ưu tiên 3":
+                    tvPhanloai.setBackgroundResource(R.drawable.back_square_yelow);
+                    break;
+                case "Ưu tiên 4":
+                    tvPhanloai.setBackgroundResource(R.drawable.back_square_pink);
+                    break;
+                case "Ưu tiên 5":
+                    tvPhanloai.setBackgroundResource(R.drawable.back_square_purple);
+                    break;
+                default:
+                    tvPhanloai.setBackgroundResource(R.drawable.back_square_blue); // màu mặc định
+                    break;
             }
 
-            //Click thường hoặc nhấn giữ
-            itemView.setOnClickListener(v->{
-                if(isSelectionMode){
+
+
+            //Chế độ chọn từng item
+            boolean isSelected = selectedNhatki.contains(nhatki.getId());
+
+            //Click thường
+            if (isSelectionMode) {
+                if (isSelected) {
+                    icon.setVisibility(View.INVISIBLE);
+                    iconChon.setVisibility(View.VISIBLE);
+                } else {
+                    icon.setVisibility(View.VISIBLE);
+                    iconChon.setVisibility(View.INVISIBLE);
+                }
+            } else {
+                icon.setVisibility(View.VISIBLE);
+                iconChon.setVisibility(View.INVISIBLE);
+            }
+
+            //Click bình thường
+            itemContainer.setOnClickListener(v -> {
+                if (isSelectionMode) {
                     toggleSelection(nhatki);
-                } else if(listener != null){
-                    listener.onItemClick(nhatki);
+                } else {
+                    if (listener != null) {
+                        listener.onItemClick(nhatki);
+                    }
                 }
             });
 
-            itemView.setOnLongClickListener(v -> {
-                if(!isSelectionMode){
+            //Nhấn giữ lâu
+            itemContainer.setOnLongClickListener(v -> {
+                if (!isSelectionMode) {
                     setSelectionMode(true);
                     toggleSelection(nhatki);
-                    if(listener!=null){
+                    if (listener != null) {
                         listener.onItemLongClick(nhatki);
                     }
                 }
                 return true;
             });
 
-            checkBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
-                if(isChecked){
-                    if(!selectedNhatki.contains(nhatki)) selectedNhatki.add(nhatki);
-                } else {
-                    selectedNhatki.remove(nhatki);
-                }
-                if(listener!=null){
-                    listener.onSelectionChanged(selectedNhatki.size());
-                }
-            }));
 
         }
         private void toggleSelection(Nhatki nhatki){
-            if(selectedNhatki.contains(nhatki)){
-                selectedNhatki.remove(nhatki);
+            int id = nhatki.getId();
+            if (selectedNhatki.contains(id)) {
+                selectedNhatki.remove(id);
             } else {
-                selectedNhatki.add(nhatki);
+                selectedNhatki.add(id);
             }
-            checkBox.setChecked(selectedNhatki.contains(nhatki));
-            if(listener!=null){
+
+            // Cập nhật UI ngay lập tức
+            notifyItemChanged(getAdapterPosition());
+
+            // Thông báo cho MainActivity về số lượng đã chọn
+            if (listener != null) {
                 listener.onSelectionChanged(selectedNhatki.size());
+            }
+
+            // Nếu không còn item nào được chọn, tự động tắt selection mode
+            if (selectedNhatki.isEmpty() && isSelectionMode) {
+                setSelectionMode(false);
             }
         }
     }

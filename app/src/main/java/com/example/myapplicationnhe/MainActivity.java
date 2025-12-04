@@ -1,12 +1,13 @@
 package com.example.myapplicationnhe;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -15,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
     private RecyclerView recyclerView;
     private NhatkiAdapter adapter;
     private NhatkiDatabase database;
+    Toolbar toolbar;
+    LinearLayout bottombar;
 
     private final ActivityResultLauncher<Intent> addEditLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -46,6 +48,11 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        bottombar = findViewById(R.id.bottomBar);
+
+
         database = NhatkiDatabase.getInstance(this);
         recyclerView = findViewById(R.id.nhatkidon_main);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -53,15 +60,55 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
         adapter = new NhatkiAdapter(this);
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
+        loadData();
 
         //Sự kiện cho button thêm nhật ký
         ImageButton btn_add = findViewById(R.id.add);
         btn_add.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, addNhatki.class);
+            Intent intent = new Intent(MainActivity.this, ThemNhatki.class);
             addEditLauncher.launch(intent);
         });
 
-        loadData();
+        //Sự kiện cho button close ở selection mode
+        ImageButton btn_close = findViewById(R.id.icon_close);
+        btn_close.setOnClickListener(v->tatSelectionmode());
+
+        //Sự kiện cho button xóa
+        ImageButton btn_delete = findViewById(R.id.icon_delete);
+        btn_delete.setOnClickListener(v->{
+            List<Nhatki> selectedItems = adapter.getSelectedNhatki();
+            new AlertDialog.Builder(this)
+                    .setTitle("Xác nhận xóa")
+                    .setMessage("Bạn có chắc chắn muốn xóa "+selectedItems.size() +" nhật ký này không?")
+                    .setPositiveButton("Xóa", (dialog, which) -> xoaNhatki())
+                    .setNegativeButton("Hủy", null)
+                    .show();
+
+        });
+
+    }
+    private void xoaNhatki(){
+        List<Nhatki> selectedItems = adapter.getSelectedNhatki();
+        if (!selectedItems.isEmpty()) {
+            new Thread(() -> {
+                for (Nhatki nhatki : selectedItems) {
+                    database.nhatkiDao().delete(nhatki);
+                }
+                // Sau khi xóa xong, reload lại danh sách trên UI
+                runOnUiThread(() -> {
+                    tatSelectionmode();
+                    loadData();
+                    Toast.makeText(MainActivity.this,
+                            "Đã xóa " + selectedItems.size() + " nhật ký!",
+                            Toast.LENGTH_SHORT).show();
+                });
+            }).start();
+        }
+    }
+    private void tatSelectionmode(){
+        adapter.setSelectionMode(false);
+        getSupportActionBar().setTitle("Nhật ký đa phương tiện");
+        bottombar.setVisibility(View.GONE);
     }
     private void loadData() {
         // Dùng thread riêng để không block UI
@@ -70,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
             runOnUiThread(() -> {
                 adapter.setNhatkiList(list);
                 if (list.isEmpty()) {
-                    Toast.makeText(this, "Chưa có nhật ký nào! Nhấn + để thêm nhé", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Chưa có nhật ký nào!\nNhấn + để thêm nhé", Toast.LENGTH_LONG).show();
                 }
             });
         }).start();
@@ -84,17 +131,26 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
     }
     @Override
     public void onItemLongClick(Nhatki nhatki) {
-        Toast.makeText(this, "Đang chọn nhiều...", Toast.LENGTH_SHORT).show();
-        LinearLayout bottombar = findViewById(R.id.bottomBar);
         bottombar.setVisibility(View.VISIBLE);
     }
 
     public void onSelectionChanged(int selectedCount) {
+
         if (selectedCount > 0) {
-            setTitle(selectedCount + " đã chọn");
+            toolbar.setTitle("Đã chọn " +  selectedCount);
+            bottombar.setVisibility(View.VISIBLE);
         } else {
-            setTitle("Nhật ký của tôi");
+            toolbar.setTitle("Nhật ký đa phương tiện");
+            bottombar.setVisibility(View.INVISIBLE);
         }
+        if(selectedCount==0){
+            bottombar.setVisibility(View.INVISIBLE);
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadData();
     }
 
 }
