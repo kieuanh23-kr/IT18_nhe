@@ -204,6 +204,7 @@ public class ThemNhatki extends AppCompatActivity {
             });
             return view;
         }
+
     }
 
     private void  setupDatabase(){
@@ -242,6 +243,14 @@ public class ThemNhatki extends AppCompatActivity {
                     etPhut.setText(b);
                     imbtn_icon.setImageResource(currentNhatki.getSrcImage());
                     imbtn_icon.setBackgroundResource(currentNhatki.getSrcBack());
+                    String type = currentNhatki.getType();
+                    if (type != null) {
+                        ArrayAdapter adapter = (ArrayAdapter) spinner_phanloai.getAdapter();
+                        int position = adapter.getPosition(type);
+                        if (position >= 0) {
+                            spinner_phanloai.setSelection(position);
+                        }
+                    }
                 }
             });
         });
@@ -300,6 +309,7 @@ public class ThemNhatki extends AppCompatActivity {
                     currentNhatki.setTime(thoiGian);
                     currentNhatki.setSrcImage(srcResId);
                     currentNhatki.setSrcBack(bgResId);
+
 
                     database.nhatkiDao().update(currentNhatki);
 

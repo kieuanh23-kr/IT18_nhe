@@ -141,10 +141,10 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
             bottombar.setVisibility(View.VISIBLE);
         } else {
             toolbar.setTitle("Nhật ký đa phương tiện");
-            bottombar.setVisibility(View.INVISIBLE);
+            bottombar.setVisibility(View.GONE);
         }
         if(selectedCount==0){
-            bottombar.setVisibility(View.INVISIBLE);
+            bottombar.setVisibility(View.GONE);
         }
     }
     @Override

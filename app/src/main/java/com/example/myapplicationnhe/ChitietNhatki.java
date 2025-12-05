@@ -23,7 +23,6 @@ import java.util.concurrent.Executors;
 
 public class ChitietNhatki extends AppCompatActivity {
 
-
     //Khai báo các view
     EditText etTieude;
     EditText etChitiet;
@@ -33,7 +32,6 @@ public class ChitietNhatki extends AppCompatActivity {
     NhatkiDatabase database;
     ExecutorService executorService;
     Nhatki currentNhatki;
-    boolean isEditMode = false;
     Toolbar toolbar;
     Spinner spinner_phanloai;
     ImageButton imbtn_icon;
@@ -78,7 +76,7 @@ public class ChitietNhatki extends AppCompatActivity {
         imbtn_share=findViewById(R.id.icon_share);
 
         setupDatabase();
-        setEditableMode(false);
+        setEditableMode();
 
         currentNhatkiId = getIntent().getIntExtra("nhatki_id", -1);
         if (currentNhatkiId != -1) {
@@ -89,9 +87,7 @@ public class ChitietNhatki extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Chi tiết nhật ký");
         }
-        toolbar.setNavigationOnClickListener(v -> {
-            finish();
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         String[] loai = {"Ưu tiên 1", "Ưu tiên 2", "Ưu tiên 3", "Ưu tiên 4", "Ưu tiên 5"};
         ArrayAdapter<String> adapter_phanloai = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, loai);
@@ -111,14 +107,14 @@ public class ChitietNhatki extends AppCompatActivity {
         });
 
         //Sự kiện cho button xóa
-        imbtn_Xoa.setOnClickListener(v -> {
+        imbtn_Xoa.setOnClickListener(v ->
             new AlertDialog.Builder(this)
                     .setTitle("Xác nhận xóa")
                     .setMessage("Bạn có chắc chắn muốn xóa nhật ký này không?")
                     .setPositiveButton("Xóa", (dialog, which) -> xoaNhatki())
                     .setNegativeButton("Hủy", null)
-                    .show();
-        });
+                    .show()
+        );
 
         //Sự kiện cho button chia sẻ ảnh
         imbtn_share.setOnClickListener(v -> {
@@ -154,14 +150,14 @@ public class ChitietNhatki extends AppCompatActivity {
         }).start();
     }
 
-    private void setEditableMode(boolean editable){
-        etTieude.setEnabled(editable);
-        etChitiet.setEnabled(editable);
-        etGio.setEnabled(editable);
-        etPhut.setEnabled(editable);
-        etDate.setEnabled(editable);
-        spinner_phanloai.setEnabled(editable);
-        imbtn_icon.setEnabled(editable);
+    private void setEditableMode(){
+        etTieude.setEnabled(false);
+        etChitiet.setEnabled(false);
+        etGio.setEnabled(false);
+        etPhut.setEnabled(false);
+        etDate.setEnabled(false);
+        spinner_phanloai.setEnabled(false);
+        imbtn_icon.setEnabled(false);
     }
 
     private void  setupDatabase(){
