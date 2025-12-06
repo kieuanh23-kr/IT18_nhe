@@ -7,4 +7,24 @@
 
     <style name="Theme.MyApplicationnhe" parent="Base.Theme.MyApplicationnhe" />
 
+    <!-- Màu chữ cho nút Positive/Negative -->
+    <style name="MyPositiveButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">#e05a47</item>
+    </style>
+
+    <style name="MyNegativeButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">#004aad</item>
+    </style>
+
+    <!-- Style cho alert -->
+    <style name="MyAlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- Màu chữ cho nút Positive -->
+        <item name="buttonBarPositiveButtonStyle">@style/MyPositiveButton</item>
+        <!-- Màu chữ cho nút Negative -->
+        <item name="buttonBarNegativeButtonStyle">@style/MyNegativeButton</item>
+    </style>
+
+
+
+
 </resources>

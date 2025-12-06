@@ -1,11 +1,12 @@
 package com.example.myapplicationnhe;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
@@ -77,9 +78,9 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
         ImageButton btn_delete = findViewById(R.id.icon_delete);
         btn_delete.setOnClickListener(v->{
             List<Nhatki> selectedItems = adapter.getSelectedNhatki();
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this,R.style.MyAlertDialogTheme)
                     .setTitle("Xác nhận xóa")
-                    .setMessage("Bạn có chắc chắn muốn xóa "+selectedItems.size() +" nhật ký này không?")
+                    .setMessage("Bạn chắc chắn muốn xóa "+selectedItems.size() +" nhật ký này?")
                     .setPositiveButton("Xóa", (dialog, which) -> xoaNhatki())
                     .setNegativeButton("Hủy", null)
                     .show();
@@ -111,14 +112,15 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
         bottombar.setVisibility(View.GONE);
     }
     private void loadData() {
+        TextView tvThongbao = findViewById(R.id.tvThongbao);
         // Dùng thread riêng để không block UI
         new Thread(() -> {
             List<Nhatki> list = database.nhatkiDao().getAll();
             runOnUiThread(() -> {
                 adapter.setNhatkiList(list);
                 if (list.isEmpty()) {
-                    Toast.makeText(this, "Chưa có nhật ký nào!\nNhấn + để thêm nhé", Toast.LENGTH_LONG).show();
-                }
+                    tvThongbao.setVisibility(View.VISIBLE);
+                } else{tvThongbao.setVisibility(View.GONE);}
             });
         }).start();
     }

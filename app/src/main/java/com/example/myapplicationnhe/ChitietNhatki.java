@@ -108,9 +108,9 @@ public class ChitietNhatki extends AppCompatActivity {
 
         //Sự kiện cho button xóa
         imbtn_Xoa.setOnClickListener(v ->
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this,R.style.MyAlertDialogTheme)
                     .setTitle("Xác nhận xóa")
-                    .setMessage("Bạn có chắc chắn muốn xóa nhật ký này không?")
+                    .setMessage("Bạn chắc chắn muốn xóa nhật ký này?")
                     .setPositiveButton("Xóa", (dialog, which) -> xoaNhatki())
                     .setNegativeButton("Hủy", null)
                     .show()
