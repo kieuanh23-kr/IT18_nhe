@@ -1,10 +1,12 @@
-package com.example.myapplicationnhe;
+package com.example.myapplicationnhe.Database;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import com.example.myapplicationnhe.Model.Nhatki;
 
 import java.util.List;
 
@@ -25,7 +27,4 @@ public interface NhatkiDao {
 
     @Query("SELECT * FROM Nhat_ki WHERE id = :id")
     Nhatki getById(int id);
-
-    @Query("DELETE FROM Nhat_ki")
-    void deleteAll();
 }

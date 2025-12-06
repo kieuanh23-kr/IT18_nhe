@@ -2,11 +2,10 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_margin="10dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
@@ -29,14 +28,6 @@
             android:id="@+id/icon_chon"
             android:background="@drawable/back_circle_black"
             android:src="@drawable/icon_check"
-            android:visibility="invisible"/>
-        <CheckBox
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:id="@+id/checkbox1"
-            app:layout_constraintTop_toBottomOf="@id/phanloai"
-            app:layout_constraintStart_toStartOf="@id/phanloai"
-            app:layout_constraintEnd_toEndOf="@id/phanloai"
             android:visibility="invisible"/>
         <TextView
             android:layout_width="120dp"

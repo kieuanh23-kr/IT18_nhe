@@ -1,23 +1,21 @@
-package com.example.myapplicationnhe;
-
-import static java.security.AccessController.getContext;
+package com.example.myapplicationnhe.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplicationnhe.Model.Nhatki;
+import com.example.myapplicationnhe.R;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiViewHolder> {
@@ -62,6 +60,7 @@ public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiView
         return nhatkiList.size();
     }
 
+
     public void setNhatkiList(List<Nhatki> list) {
         this.nhatkiList = list;
         notifyDataSetChanged();
@@ -85,22 +84,15 @@ public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiView
         return selected;
     }
 
-    public void clearSelection(){
-        selectedNhatki.clear();
-        setSelectionMode(false);
-    }
-
 
     class NhatkiViewHolder extends RecyclerView.ViewHolder{
         ImageButton icon,iconChon;
-        CheckBox checkBox;
         TextView tvTieude, tvNgay,tvGio, tvPhanloai;
         View itemContainer;
         public NhatkiViewHolder(@NonNull View itemView){
             super(itemView);
             icon=itemView.findViewById(R.id.icon);
             iconChon=itemView.findViewById(R.id.icon_chon);
-            checkBox=itemView.findViewById(R.id.checkbox1);
             tvTieude=itemView.findViewById(R.id.tvTieude);
             tvNgay=itemView.findViewById(R.id.ngay);
             tvGio=itemView.findViewById(R.id.gio);
@@ -163,8 +155,6 @@ public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiView
                     break;
             }
 
-
-
             //Chế độ chọn từng item
             boolean isSelected = selectedNhatki.contains(nhatki.getId());
 
@@ -204,8 +194,6 @@ public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiView
                 }
                 return true;
             });
-
-
         }
         private void toggleSelection(Nhatki nhatki){
             int id = nhatki.getId();
@@ -214,7 +202,6 @@ public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiView
             } else {
                 selectedNhatki.add(id);
             }
-
             // Cập nhật UI ngay lập tức
             notifyItemChanged(getAdapterPosition());
 

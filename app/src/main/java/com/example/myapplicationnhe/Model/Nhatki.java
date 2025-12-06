@@ -1,4 +1,4 @@
-package com.example.myapplicationnhe;
+package com.example.myapplicationnhe.Model;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;

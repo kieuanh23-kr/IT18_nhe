@@ -1,4 +1,4 @@
-package com.example.myapplicationnhe;
+package com.example.myapplicationnhe.UI;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -23,6 +23,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.myapplicationnhe.Model.Nhatki;
+import com.example.myapplicationnhe.Database.NhatkiDatabase;
+import com.example.myapplicationnhe.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.Calendar;
@@ -276,7 +279,7 @@ public class ThemNhatki extends AppCompatActivity {
         //Kiểm tra rỗng
         if (tieuDe.isEmpty() || chiTiet.isEmpty() || gioStr.isEmpty() || phutStr.isEmpty() || ngay.isEmpty()){
             Toast.makeText(getApplicationContext(),
-                    "⚠️ Vui lòng nhập đầy đủ thông tin!",
+                    "Vui lòng nhập đầy đủ thông tin!",
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -287,13 +290,13 @@ public class ThemNhatki extends AppCompatActivity {
             gio = Integer.parseInt(gioStr);
             phut = Integer.parseInt(phutStr);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "⚠️ Giờ/phút không hợp lệ!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Giờ/phút không hợp lệ!", Toast.LENGTH_LONG).show();
             return;
         }
 
         if((gio<0||gio>24)||(phut>60 || phut<0)){
             Toast.makeText(getApplicationContext(),
-                    "⚠️ Vui lòng nhập đúng định dạng giờ/phút!",
+                    "Vui lòng nhập đúng định dạng giờ/phút!",
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -309,7 +312,6 @@ public class ThemNhatki extends AppCompatActivity {
                     currentNhatki.setTime(thoiGian);
                     currentNhatki.setSrcImage(srcResId);
                     currentNhatki.setSrcBack(bgResId);
-
 
                     database.nhatkiDao().update(currentNhatki);
 

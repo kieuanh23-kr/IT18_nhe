@@ -1,4 +1,4 @@
-package com.example.myapplicationnhe;
+package com.example.myapplicationnhe.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.myapplicationnhe.Model.Nhatki;
+import com.example.myapplicationnhe.Database.NhatkiDatabase;
+import com.example.myapplicationnhe.R;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

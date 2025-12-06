@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".UI.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -36,7 +36,8 @@
         android:id="@+id/nhatkidon_main"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         tools:listitem="@layout/nhatki_don"
         app:layout_constraintTop_toBottomOf="@id/toolbar_1"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"

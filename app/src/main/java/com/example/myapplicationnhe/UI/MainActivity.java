@@ -1,4 +1,4 @@
-package com.example.myapplicationnhe;
+package com.example.myapplicationnhe.UI;
 
 import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
@@ -21,9 +21,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.myapplicationnhe.Model.Nhatki;
+import com.example.myapplicationnhe.Adapter.NhatkiAdapter;
+import com.example.myapplicationnhe.Database.NhatkiDatabase;
+import com.example.myapplicationnhe.R;
+
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnItemClickListener{
+public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnItemClickListener {
 
 
     private RecyclerView recyclerView;
@@ -111,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
         getSupportActionBar().setTitle("Nhật ký đa phương tiện");
         bottombar.setVisibility(View.GONE);
     }
+
     private void loadData() {
         TextView tvThongbao = findViewById(R.id.tvThongbao);
         // Dùng thread riêng để không block UI
@@ -136,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
         bottombar.setVisibility(View.VISIBLE);
     }
 
+    @Override
     public void onSelectionChanged(int selectedCount) {
 
         if (selectedCount > 0) {

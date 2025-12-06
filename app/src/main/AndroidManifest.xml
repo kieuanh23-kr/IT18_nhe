@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplicationnhe">
         <activity
-            android:name=".MainActivity"
+            android:name=".UI.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ThemNhatki"/>
-        <activity android:name=".ChitietNhatki"/>
+        <activity android:name=".UI.ThemNhatki"/>
+        <activity android:name=".UI.ChitietNhatki"/>
     </application>
 </manifest>
