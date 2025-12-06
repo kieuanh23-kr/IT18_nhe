@@ -204,17 +204,14 @@ public class NhatkiAdapter extends RecyclerView.Adapter<NhatkiAdapter.NhatkiView
             }
             // Cập nhật UI ngay lập tức
             notifyItemChanged(getAdapterPosition());
-
             // Thông báo cho MainActivity về số lượng đã chọn
             if (listener != null) {
                 listener.onSelectionChanged(selectedNhatki.size());
             }
-
             // Nếu không còn item nào được chọn, tự động tắt selection mode
             if (selectedNhatki.isEmpty() && isSelectionMode) {
                 setSelectionMode(false);
             }
         }
     }
-
 }

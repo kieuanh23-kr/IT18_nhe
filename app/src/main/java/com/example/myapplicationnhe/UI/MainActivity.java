@@ -161,5 +161,4 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
         super.onResume();
         loadData();
     }
-
 }
