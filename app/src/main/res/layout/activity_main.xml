@@ -32,6 +32,28 @@
         app:layout_constraintTop_toTopOf="@id/toolbar_1"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_1"
+        app:layout_constraintBottom_toTopOf="@id/nhatkidon_main"
+        android:id="@+id/timkiem"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:paddingLeft="12dp">
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:hint="Nhập từ khóa tìm kiếm"
+            android:id="@+id/etTimkiem"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="Tìm kiếm"
+            android:id="@+id/btnTimkiem"
+            android:layout_marginLeft="20dp"
+            android:backgroundTint="#004aad"/>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/nhatkidon_main"
@@ -40,7 +62,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         tools:listitem="@layout/nhatki_don"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_1"
+        app:layout_constraintTop_toBottomOf="@id/timkiem"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

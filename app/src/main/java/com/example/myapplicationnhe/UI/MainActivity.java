@@ -3,12 +3,17 @@ package com.example.myapplicationnhe.UI;
 import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.SearchView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -36,11 +41,14 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
     private NhatkiDatabase database;
     Toolbar toolbar;
     LinearLayout bottombar;
+    EditText edTimkiem;
+    Button btnTimkiem;
 
     private final ActivityResultLauncher<Intent> addEditLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK) {
-                    loadData(); // Reload lại danh sách khi thêm/sửa thành công
+
+                        loadData();
                 }
             });
 
@@ -57,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         bottombar = findViewById(R.id.bottomBar);
-
+        edTimkiem = findViewById(R.id.etTimkiem);
+        btnTimkiem = findViewById(R.id.btnTimkiem);
 
         database = NhatkiDatabase.getInstance(this);
         recyclerView = findViewById(R.id.nhatkidon_main);
@@ -92,7 +101,42 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
 
         });
 
+
+        btnTimkiem.setOnClickListener(v -> {
+            String keyword = edTimkiem.getText().toString();
+            performSearch(keyword);});
+
     }
+
+    private void performSearch(String keyword){
+        new Thread(()-> {
+            List<Nhatki> list;
+            if(keyword.trim().isEmpty()){
+                list=database.nhatkiDao().getAll();
+
+            }else {
+                list = database.nhatkiDao().searchByTitle(keyword.trim());
+            }
+            runOnUiThread(()->{
+                adapter.setNhatkiList(list);
+                updateEmptyViews(list.isEmpty(),keyword);
+            });
+        }).start();
+    }
+    private void updateEmptyViews(boolean isEmty,String keyword){
+        TextView tvThongbao = findViewById(R.id.tvThongbao);
+        if(isEmty){
+            if(keyword.trim().isEmpty()){
+                tvThongbao.setVisibility(View.VISIBLE);
+            }else {
+                tvThongbao.setText("Không có kết quả tìm kiếm");
+                tvThongbao.setVisibility(View.VISIBLE);
+            }
+        }else {
+            tvThongbao.setVisibility(View.GONE);
+        }
+    }
+
     private void xoaNhatki(){
         List<Nhatki> selectedItems = adapter.getSelectedNhatki();
         if (!selectedItems.isEmpty()) {
@@ -103,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
                 // Sau khi xóa xong, reload lại danh sách trên UI
                 runOnUiThread(() -> {
                     tatSelectionmode();
-                    loadData();
+                    performSearch(edTimkiem.getText().toString());
                     Toast.makeText(MainActivity.this,
                             "Đã xóa " + selectedItems.size() + " nhật ký!",
                             Toast.LENGTH_SHORT).show();
@@ -160,5 +204,17 @@ public class MainActivity extends AppCompatActivity implements NhatkiAdapter.OnI
     protected void onResume() {
         super.onResume();
         loadData();
+    }
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (v instanceof EditText) {
+                v.clearFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }

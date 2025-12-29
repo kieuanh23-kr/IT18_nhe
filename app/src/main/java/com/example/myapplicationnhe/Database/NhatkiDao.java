@@ -27,4 +27,7 @@ public interface NhatkiDao {
 
     @Query("SELECT * FROM Nhat_ki WHERE id = :id")
     Nhatki getById(int id);
+
+    @Query("SELECT * FROM Nhat_ki WHERE title LIKE '%' || :keyword || '%' ORDER BY id DESC")
+    List<Nhatki> searchByTitle(String keyword);
 }
